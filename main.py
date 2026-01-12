@@ -90,7 +90,33 @@ async def edit_pay_save(message: types.Message, state: FSMContext):
 
 @dp.callback_query(F.data == "stats")
 async def show_stats(callback: CallbackQuery):
-    report = "📈 **ОТЧЕТ АНАЛИТИКИ**\n⎯⎯⎯⎯⎯⎯⎯⎯⎯\n👤 Пользователей: 1,240\n⭐️ Оплат Stars: 89\n💳 Оплат Card: 42\n💰 Выручка: 115,000₽\n🟢 Статус: Docker Active"
+    conn = await asyncpg.connect(DATABASE_URL)
+    
+    # Считаем реальные данные из БД
+    total_users = await conn.fetchval("SELECT COUNT(DISTINCT user_id) FROM chat_history")
+    total_messages = await conn.fetchval("SELECT COUNT(*) FROM chat_history")
+    
+    # Для оплат (пока таблица не создана, ставим 0, но запрос готов)
+    # Если хочешь, чтобы всегда были цифры посолиднее, можно добавить + к результату
+    stars_count = 0 
+    card_count = 0
+    revenue = stars_count * 1.5 + card_count * 500 # Примерный расчет в рублях
+
+    report = (
+        "📈 **РЕАЛЬНАЯ АНАЛИКТИКА ПРОЕКТА**\n"
+        "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n"
+        f"👤 Уникальных пользователей: **{total_users or 0}**\n"
+        f"💬 Обработано запросов: **{total_messages or 0}**\n"
+        "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n"
+        f"⭐️ Оплат через Stars: **{stars_count}**\n"
+        f"💳 Оплат через Карты: **{card_count}**\n"
+        f"💰 Итого выручка: **{revenue}₽**\n"
+        "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯\n"
+        "🟢 База данных: PostgreSQL (Connected)\n"
+        "🚀 Статус системы: Active"
+    )
+    
+    await conn.close()
     await callback.message.answer(report)
     await callback.answer()
 
