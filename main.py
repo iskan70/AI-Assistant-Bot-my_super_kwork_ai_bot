@@ -12,7 +12,7 @@ from openai import AsyncOpenAI
 
 # 1. КОНФИГУРАЦИЯ
 # Добавь сюда свой ID и ID заказчика через запятую
-ADMIN_IDS = [560649514]  
+ADMIN_IDS = [494255577]  
 
 TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
