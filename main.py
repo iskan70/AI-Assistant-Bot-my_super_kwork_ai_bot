@@ -34,7 +34,10 @@ async def init_db():
 @dp.message(Command("start"))
 async def start_cmd(message: types.Message):
     user_name = message.from_user.first_name
-    await message.answer(f"Привет, {user_name}! 🚀\nЯ твой AI-помощник с памятью в PostgreSQL. Я помню последние 30 сообщений.")
+    await message.answer(f"Привет, {user_name}! 🚀\n\n"
+        "Я твой интеллектуальный помощник. Я внимательно слежу за нашей нитью повествования "
+        "и помню контекст наших последних обсуждений.\n\n"
+        "Чем я могу быть полезен сегодня?")
 
 @dp.message()
 async def chat_handler(message: types.Message):
